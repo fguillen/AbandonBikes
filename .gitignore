@@ -1,0 +1,6 @@
+.bundle
+etc
+tmp
+db/*.sqlite3
+config/app_config.yml
+log

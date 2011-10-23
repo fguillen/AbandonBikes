@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AbandonBikes</title>
+  <%= stylesheet_link_tag    "/assets/stylesheets/reset" %>
+  <%= stylesheet_link_tag    "/assets/stylesheets/application" %>
+  <%= javascript_include_tag "/assets/javascripts/application" %>
+  <%= javascript_include_tag "/assets/javascripts/jquery-1.6.4.min.js" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <div id="container">
+    <div id="header">
+      <h1>AbandonBikes</h1>
+      <h2>They just want to be happy again</h2>
+    </div>
+    
+    <div id="content">
+      <%= yield %>
+    </div>
+  </div> <!-- container -->
+
+</body>
+</html>

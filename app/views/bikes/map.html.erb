@@ -1,0 +1,112 @@
+<div id="address">
+  <form onsubmit="codeAddress(); return false;">
+    <label>address</label>
+    <input id="address-field" type="text" />
+  </form>
+</div>
+
+<div id="map">
+</div>
+
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+  var geocoder;
+  var map;
+  var iconAttributes = [];  
+  
+  function loadIconAttributes() {
+    iconAttributes["image"] = 
+      new google.maps.MarkerImage(
+        '/assets/images/icon_bike.png',
+        new google.maps.Size(32,37),
+        new google.maps.Point(0,0),
+        new google.maps.Point(16,37)
+      );
+      
+    iconAttributes["shadow"] = 
+      new google.maps.MarkerImage(
+        '/assets/images/icon_shadow.png',
+        new google.maps.Size(54,37),
+        new google.maps.Point(0,0),
+        new google.maps.Point(16,37)
+      );
+
+    iconAttributes["shape"] = {
+      coord: [30,0,31,1,31,2,31,3,31,4,31,5,31,6,31,7,31,8,31,9,31,10,31,11,31,12,31,13,31,14,31,15,31,16,31,17,31,18,31,19,31,20,31,21,31,22,31,23,31,24,31,25,31,26,31,27,31,28,31,29,31,30,30,31,24,32,23,33,22,34,21,35,20,36,11,36,10,35,9,34,8,33,7,32,1,31,0,30,0,29,0,28,0,27,0,26,0,25,0,24,0,23,0,22,0,21,0,20,0,19,0,18,0,17,0,16,0,15,0,14,0,13,0,12,0,11,0,10,0,9,0,8,0,7,0,6,0,5,0,4,0,3,0,2,0,1,1,0,30,0],
+      type: 'poly'
+    };
+  }
+  
+  function initialize() {
+    geocoder      = new google.maps.Geocoder();
+    var latlng    = new google.maps.LatLng(52.4933, 13.39638);
+    var myOptions = {
+      zoom      : 15,
+      center    : latlng,
+      mapTypeId : google.maps.MapTypeId.ROADMAP
+    }
+    map = new google.maps.Map(document.getElementById("map"), myOptions);
+  }
+
+  function codeAddress() {
+    var address = document.getElementById("address-field").value;
+    geocoder.geocode( 
+      { 'address': address }, 
+      function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          map.setCenter(results[0].geometry.location);
+          map.setZoom(15);
+          var marker = 
+            new google.maps.Marker({
+              map       : map, 
+              position  : results[0].geometry.location
+            });
+        } else {
+          alert("Geocode was not successful for the following reason: " + status);
+        }
+      }
+    );
+  }
+  
+  function addMarker(id, lat, lng) {
+    
+    var marker =
+      new google.maps.Marker({
+        icon      : iconAttributes["image"],
+        shadow    : iconAttributes["shadow"],
+        shape     : iconAttributes["shape"],
+        position  : new google.maps.LatLng(lat, lng), 
+        map       : map,
+        title     : "Hello World!"
+      });
+    
+    var infowindow = 
+      new google.maps.InfoWindow({
+        content: $('#info_' + id).html()
+      });
+      
+    google.maps.event.addListener( marker, 'click', function() {
+      infowindow.open( map, marker );
+    });
+  }
+  
+
+
+  
+  $(function(){
+    loadIconAttributes();
+    initialize();
+    <% @bikes.each do |bike| %>
+      addMarker( <%= bike.id %>, <%= bike.lat %>, <%= bike.lng %> )
+    <% end %>
+  });
+</script>
+
+<% @bikes.each do |bike| %>
+  <div id="info_<%= bike.id %>" style="display:none">
+    <div class="bike-info" style="display:block;">
+      <h1>#<%= bike.id %> <%= bike.address %></h1>
+      <%= image_tag bike.pic.url(:medium) %>
+    </div>
+  </div>
+<% end %>

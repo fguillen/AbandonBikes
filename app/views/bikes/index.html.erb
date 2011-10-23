@@ -1,0 +1,34 @@
+
+
+
+<h1>Listing bikes</h1>
+
+<table>
+  <tr>
+    <th>Address</th>
+    <th>Date</th>
+    <th>Pic</th>
+    <th>Email</th>
+    <th>Gps</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @bikes.each do |bike| %>
+  <tr>
+    <td><%= bike.address %></td>
+    <td><%= bike.date %></td>
+    <td><%= bike.pic_id %></td>
+    <td><%= bike.email %></td>
+    <td><%= bike.gps %></td>
+    <td><%= link_to 'Show', bike %></td>
+    <td><%= link_to 'Edit', edit_bike_path(bike) %></td>
+    <td><%= link_to 'Destroy', bike, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Bike', new_bike_path %>

@@ -1,0 +1,32 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Address:</b>
+  <%= @bike.address %>
+</p>
+
+<p>
+  <b>Date:</b>
+  <%= @bike.date %>
+</p>
+
+<p>
+  <b>Pic:</b>  
+  <%= image_tag @bike.pic.url %>
+  <%= image_tag @bike.pic.url(:medium) %>
+  <%= image_tag @bike.pic.url(:thumb) %>
+</p>
+
+<p>
+  <b>Email:</b>
+  <%= @bike.email %>
+</p>
+
+<p>
+  <b>Gps:</b>
+  <%= @bike.gps %>
+</p>
+
+
+<%= link_to 'Edit', edit_bike_path(@bike) %> |
+<%= link_to 'Back', bikes_path %>
