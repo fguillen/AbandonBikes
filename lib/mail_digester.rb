@@ -7,7 +7,20 @@ module MailDigester
   end
   
   def self.process( mail )
+    bike = 
+      Bike.create!(
+        :address => mail.subject,
+        :pic     => extract_pic( mail ),
+        :email   => mail.from.first
+      )
+      
+    bike.update_gps
+    bike.update_address
+  end
+  
+  def self.extract_pic( mail )
     pic = nil
+    
     if( !mail.attachments.empty? )
       attach  = mail.attachments.first
       pic     = StringIO.new( attach.read )
@@ -15,14 +28,6 @@ module MailDigester
       pic.content_type      = attach.mime_type
     end
     
-    bike = 
-      Bike.create!(
-        :address => mail.subject,
-        :pic     => pic,
-        :email   => mail.from.first
-      )
-      
-    bike.update_gps
-    bike.update_address
+    pic
   end
 end

@@ -2,20 +2,20 @@ require 'test_helper'
 
 class MailDigesterTest < ActiveSupport::TestCase
   def test_run
-    raw_mails = [
-      read_fixture( "bike_geolocalized.raw_mail" ),
-      read_fixture( "bike_no_geolocalized.raw_mail" ),
+    mails = [
+      Mail.read( "#{FIXTURES_PATH}/bike_geolocalized.raw_mail" ),
+      Mail.read( "#{FIXTURES_PATH}/bike_no_geolocalized.raw_mail" ),
     ]
 
+    Mail.expects( :all ).returns( mails ).once
+    
     assert_difference( "Bike.count", 2 ) do
-      FibberMailman.lie_to_me( raw_mails ) do
-        MailDigester.run
-      end
+      MailDigester.run
     end
   end
 
   def test_process_bike_geolocalized_mail
-    mail = Mail.new( "#{FIXTURES_PATH}/bike_geolocalized.raw_mail" )
+    mail = Mail.read( "#{FIXTURES_PATH}/bike_geolocalized.raw_mail" )
 
     assert_difference "Bike.count", 1 do
       MailDigester.process( mail )
@@ -30,7 +30,7 @@ class MailDigesterTest < ActiveSupport::TestCase
   end
 
   def test_process_bike_no_geolocalized_mail
-    mail = Mail.new( "#{FIXTURES_PATH}/bike_geolocalized.raw_mail" )
+    mail = Mail.read( "#{FIXTURES_PATH}/bike_geolocalized.raw_mail" )
 
     assert_difference "Bike.count", 1 do
       MailDigester.process( mail )
