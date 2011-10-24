@@ -1,0 +1,17 @@
+test:
+  pop:
+    server: pop_server
+    user: pop_user
+    pass: pop_pass
+    
+development:
+  pop:
+    server: pop.gmail.com
+    user: mail@gmail.com
+    pass: pass
+  
+production:
+  pop:
+    server: pop.gmail.com
+    user: mail@gmail.com
+    pass: pass
