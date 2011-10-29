@@ -1,49 +1,30 @@
 require 'test_helper'
 
 class BikesControllerTest < ActionController::TestCase
-  setup do
-    @bike = bikes(:one)
+  def setup
   end
 
-  # test "should get index" do
-  #   get :index
-  #   assert_response :success
-  #   assert_not_nil assigns(:bikes)
-  # end
-  # 
-  # test "should get new" do
-  #   get :new
-  #   assert_response :success
-  # end
-  # 
-  # test "should create bike" do
-  #   assert_difference('Bike.count') do
-  #     post :create, :bike => @bike.attributes
-  #   end
-  # 
-  #   assert_redirected_to bike_path(assigns(:bike))
-  # end
-  # 
-  # test "should show bike" do
-  #   get :show, :id => @bike.to_param
-  #   assert_response :success
-  # end
-  # 
-  # test "should get edit" do
-  #   get :edit, :id => @bike.to_param
-  #   assert_response :success
-  # end
-  # 
-  # test "should update bike" do
-  #   put :update, :id => @bike.to_param, :bike => @bike.attributes
-  #   assert_redirected_to bike_path(assigns(:bike))
-  # end
-  # 
-  # test "should destroy bike" do
-  #   assert_difference('Bike.count', -1) do
-  #     delete :destroy, :id => @bike.to_param
-  #   end
-  # 
-  #   assert_redirected_to bikes_path
-  # end
+  def test_index
+    Bike.any_instance.stubs( :to_hash ).returns( "bike_json" )
+
+    2.times { Factory( :bike ) }
+
+    get :index
+
+    assert_response :success
+    assert_equal( "application/json", @response.content_type )
+    assert_equal( ["bike_json", "bike_json"], JSON.parse( @response.body ) )
+  end
+
+  def test_show
+    Bike.any_instance.stubs( :to_hash ).returns( "bike_json" )
+
+    bike = Factory( :bike )
+
+    get :show, id: bike.id
+
+    assert_response :success
+    assert_equal( "application/json", @response.content_type )
+    assert_equal( "bike_json", @response.body )
+  end
 end

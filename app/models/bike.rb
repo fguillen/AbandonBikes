@@ -4,8 +4,7 @@ class Bike < ActiveRecord::Base
   has_attached_file(
     :pic, 
     :styles => { 
-      :medium => "300x300>", 
-      :thumb => "100x100>"
+      :min => "300x300>"
     }
   )
   
@@ -28,6 +27,17 @@ class Bike < ActiveRecord::Base
   def update_address
     self.address ||= Geo.to_address( gps )
     save!
+  end
+  
+  def to_hash
+    {
+      id:       id,
+      address:  address,
+      lat:      lat,
+      lng:      lng,
+      pic:      pic( :url ),
+      pic_min:  pic( :min )
+    }
   end
     
 end

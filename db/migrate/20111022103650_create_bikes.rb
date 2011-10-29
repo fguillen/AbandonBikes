@@ -3,7 +3,6 @@ class CreateBikes < ActiveRecord::Migration
     create_table :bikes do |t|
       t.string :address
       t.datetime :date
-      t.integer :pic_id
       t.string :email
       t.string :gps
 

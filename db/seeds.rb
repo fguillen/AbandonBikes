@@ -5,3 +5,22 @@
 #
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Mayor.create(:name => 'Emanuel', :city => cities.first)
+
+bike = 
+  Bike.create!(
+    address:  "Furbringerstrasse, 25, Berlin",
+    pic:      File.new( "#{File.dirname(__FILE__)}/../test/fixtures/pic_geolocalized.jpg" )
+  )
+  
+bike.update_address
+bike.update_gps
+
+
+bike = 
+  Bike.create!(
+    address:  "Furbringerstrasse, 1, Berlin",
+    pic:      File.new( "#{File.dirname(__FILE__)}/../test/fixtures/pic_geolocalized.jpg" )
+  )
+  
+bike.update_address
+bike.update_gps
