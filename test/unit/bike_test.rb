@@ -32,11 +32,11 @@ class BikeTest < ActiveSupport::TestCase
   def test_to_hash
     bike = Factory( :bike, pic: File.new( "#{FIXTURES_PATH}/pic_geolocalized.jpg" ) )
 
-    assert_equal( bike.id           , bike.to_hash[:id] )
-    assert_equal( bike.address      , bike.to_hash[:address] )
-    assert_equal( bike.lat          , bike.to_hash[:lat] )
-    assert_equal( bike.lng          , bike.to_hash[:lng] )
-    assert_equal( bike.pic( :url )  , bike.to_hash[:pic] )
-    assert_equal( bike.pic( :min )  , bike.to_hash[:pic_min] )
+    assert_equal( bike.id               , bike.to_hash[:id] )
+    assert_equal( bike.address          , bike.to_hash[:address] )
+    assert_equal( bike.lat              , bike.to_hash[:lat] )
+    assert_equal( bike.lng              , bike.to_hash[:lng] )
+    assert_equal( bike.pic( :original ) , bike.to_hash[:pic] )
+    assert_equal( bike.pic( :min )      , bike.to_hash[:pic_min] )
   end
 end

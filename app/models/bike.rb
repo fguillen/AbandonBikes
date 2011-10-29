@@ -35,7 +35,7 @@ class Bike < ActiveRecord::Base
       address:  address,
       lat:      lat,
       lng:      lng,
-      pic:      pic( :url ),
+      pic:      pic( :original ),
       pic_min:  pic( :min )
     }
   end

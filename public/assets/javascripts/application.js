@@ -114,6 +114,11 @@ function showBike( id ){
       $("#bike img").attr( "src", bike.pic_min );
       $("#bike").show();
       
+      $("#bike img").click( function() {
+        console.log( "pic in image" );
+        zoom( bike.pic );
+      });
+      
       centerMap( bike.lat, bike.lng );
     },
     "json"
@@ -137,6 +142,12 @@ function loadBikes( call_back ) {
     },
     "json"
   );
+}
+
+function zoom( url ) {
+  console.log( "zoom: ", url );
+  $("#zoom").css( 'background', 'url( "' + url + '" ) no-repeat center center fixed');
+  $("#zoom").show();
 }
 
 
