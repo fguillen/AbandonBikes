@@ -1,11 +1,23 @@
 var getBikesUrl = "/bikes";
-var getBikeUrl  = "/bikes";
 
 var geocoder;
 var map;
 var iconAttributes = [];  
 
-var markers = [];
+var bikes = [];
+
+function Bike( data ) {
+  this.id           = data.id;
+  this.lat          = data.lat;
+  this.lng          = data.lng;
+  this.pic          = data.pic;
+  this.pic_min      = data.pic_min;
+  this.date         = data.date;
+  this.marker       = addMarker( this );
+  this.zoom         = function() { zoom( this ) };
+  this.nextBike     = null;
+  this.previousBike = null;
+}
 
 function loadIconAttributes() {
   iconAttributes["image"] = 
@@ -53,7 +65,6 @@ function codeAddress( address ) {
   history.pushState( null, null, $.url().attr( "fragment", "a=" + address ) );
   $('#address-field').attr( 'value', address );
   
-  console.log( "address: ", address );
   geocoder.geocode( 
     { 'address': address }, 
     function(results, status) {
@@ -72,57 +83,64 @@ function codeAddress( address ) {
   );
 }
 
-function addMarker(id, lat, lng) {
-  console.log( "addMarker: ", id );
+function addMarker( bike ) {
   
-  markers[ id ] =
+  marker =
     new google.maps.Marker({
       icon      : iconAttributes["image"],
       shadow    : iconAttributes["shadow"],
       shape     : iconAttributes["shape"],
-      position  : new google.maps.LatLng(lat, lng), 
+      position  : new google.maps.LatLng( bike.lat, bike.lng ), 
       map       : map,
       title     : "Hello World!"
     });
-    
-  google.maps.event.addListener( markers[ id ], 'click', function() {
-    showBike( id )
+  
+  google.maps.event.addListener( marker, 'click', function() {
+    showBike( bike );
   });
+  
+  return marker;
 }
 
-function addBike( bike ){
-  addMarker( bike.id, bike.lat, bike.lng );
+function addBike( data ){
+  bikes.push( new Bike( data ) );
 }
 
-function showBike( id ){
-  console.log( "showBike: ", id );
+function showBike( bike ){
+  console.log( "showBike: ", bike );
+  console.log( "showBike.id: ", bike.id );
   
-  history.pushState( null, null, $.url().attr( "fragment", "b=" + id ) );
+  history.pushState( null, null, $.url().attr( "fragment", "b=" + bike.id ) );
   
-  $.each( markers, function( index, marker ){
-    if( marker ) {
-      marker.setIcon( iconAttributes["image"] );
-    }
+  $.each( bikes, function( index, bike ){
+    bike.marker.setIcon( iconAttributes["image"] );
   });
-  markers[ id ].setIcon( iconAttributes["image_selected"] );
+  bike.marker.setIcon( iconAttributes["image_selected"] );
+
+  $("#bike h1 #id").html( bike.id );
+  $("#bike #address").html( bike.address );
+  $("#bike img").attr( "src", bike.pic_min );
+  $("#bike").show();
   
-  $.get( 
-    getBikeUrl + "/" + id,
-    function( bike ){
-      $("#bike h1 #id").html( bike.id );
-      $("#bike #address").html( bike.address );
-      $("#bike img").attr( "src", bike.pic_min );
-      $("#bike").show();
-      
-      $("#bike img").click( function() {
-        console.log( "pic in image" );
-        zoom( bike.pic );
-      });
-      
-      centerMap( bike.lat, bike.lng );
-    },
-    "json"
-  );
+  $("#bike img").unbind('click');
+  $("#bike img").click( function() {
+    bike.zoom();
+  });
+
+  $("#previous-bike-link").unbind('click');  
+  $("#previous-bike-link").click( function() {
+    showBike( bike.previousBike );
+    return false;
+  });
+  
+  $("#next-bike-link").unbind('click');
+  $("#next-bike-link").click( function() {
+    showBike( bike.nextBike );
+    return false;
+  });
+  
+  
+  centerMap( bike.lat, bike.lng );
 }
 
 function centerMap( lat, lng ) {
@@ -134,25 +152,50 @@ function loadBikes( call_back ) {
   $.get( 
     getBikesUrl,
     function( data ){
-      $.each( data, function( index, bike ){
-        addBike( bike );
-      });
-      
-      call_back.call();
+      $.each( data, function(){ addBike( this ); });
+      chainBikes();
+      if( call_back ) call_back.call();
     },
     "json"
   );
 }
 
-function zoom( url ) {
-  console.log( "zoom: ", url );
-  $("#zoom").css( 'background', 'url( "' + url + '" ) no-repeat center center fixed');
+function chainBikes() {
+  console.log( "chainBikes" );
+  $.each( bikes, function( index, bike ){
+    var previousIndex = (index == 0) ? (bikes.length - 1) : (index - 1);
+    var nextIndex     = (index == (bikes.length - 1)) ? 0 : (index + 1);
+    bike.previousBike = bikes[ previousIndex ];
+    bike.nextBike     = bikes[ nextIndex ];
+    
+    console.log( "previousBike: ", bike.previousBike );
+    console.log( "nextBike: ", bike.nextBike );
+  });
+}
+
+function zoom( bike ) {
+  $("#zoom").css( 'background-image', 'url( "' + bike.pic + '" )' );
   $("#zoom").show();
 }
 
+function closeZoom() {
+  $("#zoom").fadeOut( 'fast' );
+}
+
+function getBike( id ) {
+  var result = null;
+  
+  $.each( bikes, function( index, bike ) {
+    if( bike.id == id ) {
+      result = bike;
+      return false;
+    }
+  });
+  
+  return result;
+}
 
 $(function(){
-  console.log( "loaded" );
   loadIconAttributes();
   initialize();
   
@@ -160,7 +203,7 @@ $(function(){
   var address = $.url().fparam('a');
   
   if( bike_id ) {
-    loadBikes( function() { showBike( bike_id ) } );
+    loadBikes( function() { showBike( getBike( parseInt( bike_id ) ) ) } );
   } else {
     loadBikes();
   }

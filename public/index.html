@@ -34,12 +34,17 @@
           <span id="date">2011/10/01</span> in
           <span id="address">Urbanstrasse, 170, Berlin</span>
         </div>
+        
+        <div id="bike-controls">
+          <a href="#" id="previous-bike-link">previous bike</a>
+          <a href="#" id="next-bike-link">next bike</a>
+        </div>
       </div>
       
       <div id="footer">
         <p>
           <strong>AbandonBikes</strong> is an open source production by <a href="http://fernandoguillen.info">Fernando Guillen</a>,
-          fork me in the <a href="http://github.com/fguillen">github repository</a>.
+          fork me in the <a href="https://github.com/fguillen/AbandonBikes">github repository</a>.
         </p>
       </div>
       
@@ -48,7 +53,11 @@
     <div id="map">
     </div>
 
-    <div id="zoom" style="display:none"></div>
+    <div id="zoom" style="display:none">
+      <div id="zoom-controls">
+        <a href="#" onclick="closeZoom(); return false;">close</a>
+      </div>
+    </div>
     
   </div> <!-- container -->
   
