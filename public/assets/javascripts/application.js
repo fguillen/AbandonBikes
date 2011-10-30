@@ -120,6 +120,7 @@ function showBike( bike ){
   $("#bike h1 #id").html( bike.id );
   $("#bike #address").html( bike.address );
   $("#bike img").attr( "src", bike.pic_min );
+  $("#bike #date").html( bike.date );
   $("#bike").show();
   
   $("#bike img").unbind('click');
