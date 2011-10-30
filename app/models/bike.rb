@@ -17,15 +17,24 @@ class Bike < ActiveRecord::Base
   end
   
   def update_gps
-    self.gps ||= 
-      Geo.image_to_gps( pic.path ) ||
-      Geo.to_gps( address )
+    self.gps = 
+      Geo.address_to_gps( orig_address ) ||
+      Geo.image_to_gps( pic.path )
       
     save!
   end
   
   def update_address
-    self.address ||= Geo.to_address( gps )
+    self.address = 
+      Geo.address_to_address( orig_address ) ||
+      Geo.gps_to_address( gps )
+      
+    save!
+  end
+  
+  def update_date
+    self.date = EXIFR::JPEG.new( pic.path ).date_time
+    
     save!
   end
   

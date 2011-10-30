@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111022110136) do
+ActiveRecord::Schema.define(:version => 20111030180343) do
 
   create_table "bikes", :force => true do |t|
     t.string   "address"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20111022110136) do
     t.string   "pic_content_type"
     t.integer  "pic_file_size"
     t.datetime "pic_updated_at"
+    t.string   "orig_address"
   end
 
 end

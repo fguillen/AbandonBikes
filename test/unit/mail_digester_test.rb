@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 require 'test_helper'
 
 class MailDigesterTest < ActiveSupport::TestCase
@@ -22,11 +24,11 @@ class MailDigesterTest < ActiveSupport::TestCase
     end
 
     bike = Bike.last
-    assert_equal( "implement this", bike.address )
+    assert_equal( "Fürbringerstraße 25, 10961 Berlin, Germany", bike.address )
     assert_equal( "52.49333333333333, 13.3965", bike.gps )
     assert_equal( true, bike.pic.present? )
     assert_equal( "fguillen.mail@gmail.com", bike.email )
-    assert_equal( nil, bike.date )
+    assert_equal( "2011-10-22 10:31:25", bike.date.to_s(:db) )
   end
 
   def test_process_bike_no_geolocalized_mail
@@ -37,10 +39,10 @@ class MailDigesterTest < ActiveSupport::TestCase
     end
 
     bike = Bike.last
-    assert_equal( "Ackerstrasse, 14, berlin", bike.address )
-    assert_equal( "52.53107, 13.39782", bike.gps )
+    assert_equal( "Fürbringerstraße 25, 10961 Berlin, Germany", bike.address )
+    assert_equal( "52.49333333333333, 13.3965", bike.gps )
     assert_equal( true, bike.pic.present? )
     assert_equal( "fguillen.mail@gmail.com", bike.email )
-    assert_equal( nil, bike.date )
+    assert_equal( "2011-10-22 10:31:25", bike.date.to_s(:db) )
   end
 end

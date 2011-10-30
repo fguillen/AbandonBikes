@@ -1,17 +1,61 @@
 require 'test_helper'
 
 class BikeTest < ActiveSupport::TestCase
-  def test_update_gps_from_address
-    address = 'mi calle, 25, madrid'
-    gps     = "gps coordinates"
-    bike    = Factory( :bike, :address => address, :gps => nil )
+  def test_update_gps_from_orig_address
+    orig_address  = 'mi calle, 25, madrid'
+    gps           = "gps coordinates"
+    bike          = Factory( :bike, :orig_address => orig_address, :gps => nil )
 
-    Geo.expects( :image_to_gps ).returns( nil ).once
-    Geo.expects( :to_gps ).with( address ).returns( gps ).once
+    Geo.expects( :image_to_gps ).never
+    Geo.expects( :address_to_gps ).with( orig_address ).returns( gps ).once
 
     bike.update_gps
 
     assert_equal( gps, bike.gps )
+  end
+  
+  def test_update_gps_from_pic
+    gps           = "gps coordinates"
+    bike          = Factory( :bike, :orig_address => nil, :gps => nil )
+
+    Geo.expects( :image_to_gps ).with( bike.pic.path ).returns( gps ).once
+
+    bike.update_gps
+
+    assert_equal( gps, bike.gps )
+  end
+  
+  def test_update_address_from_orig_address
+    orig_address  = 'mi calle, 25, madrid'
+    address       = "final address"
+    bike          = Factory( :bike, :orig_address => orig_address, :gps => nil )
+
+    Geo.expects( :gps_to_address ).never
+    Geo.expects( :address_to_address ).with( orig_address ).returns( address ).once
+
+    bike.update_address
+
+    assert_equal( address, bike.address )
+  end
+  
+  def test_update_address_from_gps
+    gps           = "gps coordinates"
+    address       = "final address"
+    bike          = Factory( :bike, :orig_address => nil, :gps => gps )
+
+    Geo.expects( :gps_to_address ).with( gps ).returns( address ).once
+
+    bike.update_address
+
+    assert_equal( address, bike.address )
+  end
+  
+  def test_update_date_from_image
+    bike = Factory( :bike, pic: File.new( "#{FIXTURES_PATH}/pic_geolocalized.jpg" ) )
+    
+    bike.update_date
+    
+    assert_equal( "2011-10-22 10:31:25", bike.date.to_s(:db) )
   end
 
   def test_scope_geolocalized

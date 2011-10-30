@@ -9,13 +9,14 @@ module MailDigester
   def self.process( mail )
     bike = 
       Bike.create!(
-        :address => mail.subject,
-        :pic     => extract_pic( mail ),
-        :email   => mail.from.first
+        :orig_address => mail.subject,
+        :pic          => extract_pic( mail ),
+        :email        => mail.from.first
       )
       
     bike.update_gps
     bike.update_address
+    bike.update_date
   end
   
   def self.extract_pic( mail )
