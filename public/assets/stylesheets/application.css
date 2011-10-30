@@ -129,6 +129,10 @@ body,
   font-weight: bold;
 }
 
+#footer p {
+  margin-bottom: 5px;
+}
+
 
 
 #zoom {
@@ -158,4 +162,25 @@ body,
   border: 5px solid rgb(173, 0, 118);
   padding: 10px;
   border-radius: 13px 13px;
+}
+
+#banner {
+  position: fixed;
+  top: 40px;
+  right: -60px;
+  
+  transform: rotate(30deg);
+  -ms-transform:rotate(30deg); /* IE 9 */
+  -moz-transform:rotate(30deg); /* Firefox */
+  -webkit-transform:rotate(30deg); /* Safari and Chrome */
+  -o-transform:rotate(30deg); /* Opera */
+  
+  background-color: white;
+  border: 2px solid rgb(173, 0, 118);
+  padding: 10px 100px;
+  color: black;  
+}
+
+#banner a {
+  color: black;
 }
