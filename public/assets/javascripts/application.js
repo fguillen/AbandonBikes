@@ -13,6 +13,7 @@ function Bike( data ) {
   this.pic          = data.pic;
   this.pic_min      = data.pic_min;
   this.date         = data.date;
+  this.address      = data.address;
   this.marker       = addMarker( this );
   this.zoom         = function() { zoom( this ) };
   this.nextBike     = null;
