@@ -74,13 +74,21 @@ class BikeTest < ActiveSupport::TestCase
   end
 
   def test_to_hash
-    bike = Factory( :bike, pic: File.new( "#{FIXTURES_PATH}/pic_geolocalized.jpg" ) )
+    bike = 
+      Factory( 
+        :bike, 
+        address:  "my address",
+        gps:      "1, 2",
+        pic:      File.new( "#{FIXTURES_PATH}/pic_geolocalized.jpg" ),
+        date:     Time.parse( "2001-01-01 10:11:12" )
+      )
 
     assert_equal( bike.id               , bike.to_hash[:id] )
-    assert_equal( bike.address          , bike.to_hash[:address] )
-    assert_equal( bike.lat              , bike.to_hash[:lat] )
-    assert_equal( bike.lng              , bike.to_hash[:lng] )
+    assert_equal( "my address"          , bike.to_hash[:address] )
+    assert_equal( "1"                   , bike.to_hash[:lat] )
+    assert_equal( "2"                   , bike.to_hash[:lng] )
     assert_equal( bike.pic( :original ) , bike.to_hash[:pic] )
     assert_equal( bike.pic( :min )      , bike.to_hash[:pic_min] )
+    assert_equal( "2001-01-01 09:11:12" , bike.to_hash[:date] )
   end
 end
