@@ -1,0 +1,13 @@
+branch-defaults:
+  deploy:
+    environment: abandonbikes-production-2
+    group_suffix: null
+global:
+  application_name: abandonbikes
+  branch: null
+  default_ec2_keyname: aws-eb
+  default_platform: Ruby 2.3 (Passenger Standalone)
+  default_region: eu-west-1
+  profile: eb-cli
+  repository: null
+  sc: git

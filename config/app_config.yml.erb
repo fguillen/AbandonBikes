@@ -1,0 +1,24 @@
+test:
+  pop:
+    server: pop_server
+    user: pop_user
+    pass: pop_pass
+
+development:
+  pop:
+    server: pop.gmail.com
+    user: mail@gmail.com
+    pass: pass
+
+production:
+  pop:
+    server: <%= ENV['POP_SERVER'] %>
+    user: <%= ENV['POP_USER'] %>
+    pass: <%= ENV['POP_PASS'] %>
+
+  s3:
+    region: <%= ENV['S3_REGION'] %>
+    credentials:
+      bucket: <%= ENV['S3_BUCKET'] %>
+      access_key_id: <%= ENV['S3_ACCESS_KEY_ID'] %>
+      secret_access_key: <%= ENV['S3_SECRET_ACCESS_KEY'] %>

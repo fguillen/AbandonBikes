@@ -1,4 +1,4 @@
-class AddPicColumnsToBike < ActiveRecord::Migration
+class AddPicColumnsToBike < ActiveRecord::Migration[5.1]
   def self.up
     add_column :bikes, :pic_file_name,    :string
     add_column :bikes, :pic_content_type, :string

@@ -1,12 +1,30 @@
 class Bike < ActiveRecord::Base
-  scope :geolocalized, where( "gps is not null" )
+  scope :geolocalized, -> { where( "gps is not null" ) }
 
-  has_attached_file(
-    :pic,
-    :styles => {
-      :min => "300x300>"
-    }
-  )
+  if Rails.env.production?
+    has_attached_file(
+      :pic,
+      :path => ":id_:style.:extension",
+      :url => ":s3_domain_url",
+      :storage => :s3,
+      :s3_region => APP_CONFIG["s3"]["region"],
+      :s3_credentials => APP_CONFIG["s3"]["credentials"],
+      :styles => {
+        :min => "300x300>"
+      }
+    )
+  else
+    has_attached_file(
+      :pic,
+      :path => ":rails_root/public/attachments/:rails_env/:id_:style.:extension",
+      :styles => {
+        :min => "300x300>"
+      }
+    )
+  end
+
+  validates_attachment_content_type :pic, :content_type => ["image/jpg", "image/jpeg", "image/png"]
+
 
   def lat
     gps.split(',')[0].strip
@@ -16,10 +34,14 @@ class Bike < ActiveRecord::Base
     gps.split(',')[1].strip
   end
 
+  def pic_in_local
+    @pic_in_local = Paperclip.io_adapters.for(pic)
+  end
+
   def update_gps
     self.gps =
       Geo.address_to_gps( orig_address ) ||
-      Geo.image_to_gps( pic.path )
+      Geo.image_to_gps( pic_in_local.path )
 
     save!
   end
@@ -33,7 +55,7 @@ class Bike < ActiveRecord::Base
   end
 
   def update_date
-    self.date = EXIFR::JPEG.new( pic.path ).date_time
+    self.date = EXIFR::JPEG.new( pic_in_local.path ).date_time
 
     save!
   end
